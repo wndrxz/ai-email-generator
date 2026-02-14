@@ -7,28 +7,29 @@ const groq = new Groq({
 
 export async function POST(req: NextRequest) {
   try {
-    const { product, targetAudience, tone } = await req.json();
+    const { product, targetAudience, tone, language } = await req.json();
 
     if (!product || !targetAudience) {
       return NextResponse.json({ error: "Заполни все поля" }, { status: 400 });
     }
 
     const prompt = `
-Ты — эксперт по cold email маркетингу с 10-летним опытом.
+You are an expert cold email marketer with 10 years of experience.
 
-Продукт: ${product}
-Целевая аудитория: ${targetAudience}
-Тон: ${tone}
+Product: ${product}
+Target audience: ${targetAudience}
+Tone: ${tone}
+Language: ${language === "english" ? "English" : "Russian"}
 
-Сгенерируй 3 уникальных cold email письма.
+Generate 3 unique cold email letters in ${language === "english" ? "English" : "Russian"} language.
 
-Каждое письмо должно содержать:
-- Цепляющую тему письма (subject line)
-- Тело письма (body) с персонализацией, описанием проблемы, решением и call-to-action
+Each letter must contain:
+- A catchy subject line
+- Body with personalization, problem description, solution and call-to-action
 
-ВАЖНО: Ответь ТОЛЬКО валидным JSON массивом. Без markdown. Без тройных кавычек. Без слова json. Просто чистый JSON.
-Формат:
-[{"subject": "тема1", "body": "текст1"}, {"subject": "тема2", "body": "текст2"}, {"subject": "тема3", "body": "текст3"}]
+IMPORTANT: Reply ONLY with a valid JSON array. No markdown. No triple backticks. No word json. Just clean JSON.
+Format:
+[{"subject": "subject1", "body": "body1"}, {"subject": "subject2", "body": "body2"}, {"subject": "subject3", "body": "body3"}]
     `;
 
     const completion = await groq.chat.completions.create({

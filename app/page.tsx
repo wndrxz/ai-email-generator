@@ -5,6 +5,7 @@ export default function Home() {
   const [product, setProduct] = useState("");
   const [audience, setAudience] = useState("");
   const [tone, setTone] = useState("professional");
+  const [language, setLanguage] = useState("russian");
   const [emails, setEmails] = useState<{ subject: string; body: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -28,6 +29,7 @@ export default function Home() {
           product,
           targetAudience: audience,
           tone,
+          language,
         }),
       });
 
@@ -103,6 +105,20 @@ export default function Home() {
               <option value="casual">Дружелюбный</option>
               <option value="urgent">Срочный</option>
               <option value="funny">С юмором</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-300">
+              Язык письма:
+            </label>
+            <select
+              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-blue-500 focus:outline-none"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              <option value="russian">🇷🇺 Русский</option>
+              <option value="english">🇺🇸 English</option>
             </select>
           </div>
 
