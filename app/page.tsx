@@ -1,6 +1,59 @@
 "use client";
 import { useState } from "react";
 
+const texts = {
+  russian: {
+    title: "AI Генератор Cold Email",
+    subtitle: "Опиши свой продукт — получи готовые письма для продаж",
+    productLabel: "Опиши свой продукт:",
+    productPlaceholder:
+      "CRM система для стоматологий которая автоматизирует запись пациентов",
+    audienceLabel: "Целевая аудитория:",
+    audiencePlaceholder: "Владельцы стоматологий, 30-50 лет",
+    toneLabel: "Тон письма:",
+    tones: {
+      professional: "Профессиональный",
+      casual: "Дружелюбный",
+      urgent: "Срочный",
+      funny: "С юмором",
+    },
+    langLabel: "Язык:",
+    generateBtn: "Сгенерировать письма",
+    loadingBtn: "Генерирую письма...",
+    resultsTitle: "Готовые письма",
+    letter: "Письмо",
+    copy: "Копировать",
+    copied: "Скопировано!",
+    error: "Заполни все поля!",
+    serverError: "Ошибка сервера. Попробуй ещё раз.",
+  },
+  english: {
+    title: "AI Cold Email Generator",
+    subtitle: "Describe your product — get ready-to-send sales emails",
+    productLabel: "Describe your product:",
+    productPlaceholder:
+      "CRM system for dental clinics that automates patient scheduling",
+    audienceLabel: "Target audience:",
+    audiencePlaceholder: "Dental clinic owners, 30-50 years old",
+    toneLabel: "Email tone:",
+    tones: {
+      professional: "Professional",
+      casual: "Casual",
+      urgent: "Urgent",
+      funny: "Funny",
+    },
+    langLabel: "Language:",
+    generateBtn: "Generate emails",
+    loadingBtn: "Generating emails...",
+    resultsTitle: "Generated emails",
+    letter: "Email",
+    copy: "Copy",
+    copied: "Copied!",
+    error: "Fill in all fields!",
+    serverError: "Server error. Try again.",
+  },
+};
+
 export default function Home() {
   const [product, setProduct] = useState("");
   const [audience, setAudience] = useState("");
@@ -11,9 +64,11 @@ export default function Home() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState<number | null>(null);
 
+  const t = texts[language as keyof typeof texts];
+
   const generateEmails = async () => {
     if (!product || !audience) {
-      setError("Заполни все поля!");
+      setError(t.error);
       return;
     }
 
@@ -41,7 +96,7 @@ export default function Home() {
         setEmails(data.emails);
       }
     } catch {
-      setError("Ошибка сервера. Попробуй ещё раз.");
+      setError(t.serverError);
     }
 
     setLoading(false);
@@ -59,66 +114,76 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       <div className="max-w-2xl mx-auto px-4 py-12">
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-bold mb-3">AI Cold Email Generator</h1>
-          <p className="text-gray-400 text-lg">
-            Опиши свой продукт — получи готовые письма для продаж
-          </p>
+        {/* Переключатель языка сверху */}
+        <div className="flex justify-end mb-6">
+          <button
+            onClick={() => setLanguage("russian")}
+            className={`px-3 py-1 rounded-l-lg text-sm cursor-pointer ${
+              language === "russian"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-800 text-gray-400"
+            }`}
+          >
+            🇷🇺 RU
+          </button>
+          <button
+            onClick={() => setLanguage("english")}
+            className={`px-3 py-1 rounded-r-lg text-sm cursor-pointer ${
+              language === "english"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-800 text-gray-400"
+            }`}
+          >
+            🇺🇸 EN
+          </button>
         </div>
 
+        {/* Заголовок */}
+        <div className="text-center mb-10">
+          <h1 className="text-5xl font-bold mb-3">{t.title}</h1>
+          <p className="text-gray-400 text-lg">{t.subtitle}</p>
+        </div>
+
+        {/* Форма */}
         <div className="bg-gray-900 rounded-2xl p-6 space-y-5">
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
-              Опиши свой продукт:
+              {t.productLabel}
             </label>
             <textarea
               className="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none resize-none"
               rows={3}
               value={product}
               onChange={(e) => setProduct(e.target.value)}
-              placeholder="CRM система для стоматологий которая автоматизирует запись пациентов"
+              placeholder={t.productPlaceholder}
             />
           </div>
 
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
-              Целевая аудитория:
+              {t.audienceLabel}
             </label>
             <input
               className="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
               value={audience}
               onChange={(e) => setAudience(e.target.value)}
-              placeholder="Владельцы стоматологий, 30-50 лет"
+              placeholder={t.audiencePlaceholder}
             />
           </div>
 
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-300">
-              Тон письма:
+              {t.toneLabel}
             </label>
             <select
               className="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-blue-500 focus:outline-none"
               value={tone}
               onChange={(e) => setTone(e.target.value)}
             >
-              <option value="professional">Профессиональный</option>
-              <option value="casual">Дружелюбный</option>
-              <option value="urgent">Срочный</option>
-              <option value="funny">С юмором</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
-              Язык письма:
-            </label>
-            <select
-              className="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-blue-500 focus:outline-none"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-            >
-              <option value="russian">🇷🇺 Русский</option>
-              <option value="english">🇺🇸 English</option>
+              <option value="professional">{t.tones.professional}</option>
+              <option value="casual">{t.tones.casual}</option>
+              <option value="urgent">{t.tones.urgent}</option>
+              <option value="funny">{t.tones.funny}</option>
             </select>
           </div>
 
@@ -133,14 +198,15 @@ export default function Home() {
             disabled={loading}
             className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl font-bold text-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
-            {loading ? "Генерирую письма..." : "Сгенерировать письма"}
+            {loading ? t.loadingBtn : t.generateBtn}
           </button>
         </div>
 
+        {/* Результаты */}
         {emails.length > 0 && (
           <div className="mt-8 space-y-4">
             <h2 className="text-2xl font-bold">
-              Готовые письма ({emails.length})
+              {t.resultsTitle} ({emails.length})
             </h2>
 
             {emails.map((email, i) => (
@@ -151,7 +217,7 @@ export default function Home() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <span className="text-xs text-gray-500">
-                      Письмо {i + 1}
+                      {t.letter} {i + 1}
                     </span>
                     <h3 className="font-bold text-blue-400 text-lg">
                       {email.subject}
@@ -161,7 +227,7 @@ export default function Home() {
                     onClick={() => copyEmail(i, email)}
                     className="px-3 py-1 text-sm bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors cursor-pointer"
                   >
-                    {copied === i ? "Скопировано!" : "Копировать"}
+                    {copied === i ? t.copied : t.copy}
                   </button>
                 </div>
                 <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
